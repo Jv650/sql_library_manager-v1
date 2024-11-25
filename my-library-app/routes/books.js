@@ -33,7 +33,7 @@ router.get(
   "/books",
   asyncHandler(async (req, res, next) => {
     const books = await Book.findAll({ order: [["createdAt", "DESC"]] }); //findAll takes in an options object //the array createdat and desc will organize books in desired order
-    res.render("books/index", {
+    res.render("index", {
       books: books,
       title: "BOOKS",
     });
@@ -41,50 +41,51 @@ router.get(
 );
 
 //3. New Book Route
-/*router.get("/books/new", function (req, res, next) {
-  res.render("books/new");
-}); */
+router.get("/new", function (req, res, next) {
+  res.render("new-book", { title: "New Book" });
+});
 
-router.get(
-  "/books/new",
-  asyncHandler(async (req, res, next) => {
-    const book = await Book.findByPk(req.params.id);
-    if (book) {
-      //if book exists render to books/show else show 404 status
-      res.render("/books/new", {
-        //extend create.pug layout here??
-        book: book,
-        title: book.title,
-        id: book.id,
-        name: book.title,
-      });
-    } else {
-      res.sendStatus(404);
-    }
-  })
-);
+// router.get(
+//   "/new",
+//   asyncHandler(async (req, res, next) => {
+//     const book = await Book.findByPk(req.params.id);
+//     if (book) {
+//       //if book exists render to books/show else show 404 status
+//       res.render("new-book", {
+//         //extend new-book.pug layout here??
+//         book: book,
+//         title: book.title,
+//         id: book.id,
+//         name: book.title,
+//       });
+//     } else {
+//       res.sendStatus(404);
+//     }
+//   })
+// );
 
 //4. Create Book Route
 router.post(
-  "/books/new",
+  "/new",
   asyncHandler(async (req, res, next) => {
     let book;
     try {
       //You can nest try...catch statements inside `try` blocks. Any given exception will be caught only once by the nearest enclosing catch block unless it is re-thrown (which you will do in the next step).
       const book = await Book.create(req.body);
-      res.redirect("/books/" + book.id);
-    } catch (error) {
-      if (error.name === "SequelizeValidationError") {
+      res.redirect("new-book"); //"/books/" + book.id
+    } catch (err) {
+      if (er.name === "SequelizeValidationError") {
         // checking the error
         book = await Book.build(req.body);
-        res.render("create", {
-          //extend create.pug layout here??
-          book,
-          errors: error.errors,
+        book.id = req.params.id;
+        res.render("new-book", {
+          //extend new-book.pug layout here??
+          book: book,
+          errors: err.errors,
           title: "New Book",
         });
       } else {
-        throw error; //error caught in the asyncHandler's catch block
+        throw err; //error caught in the asyncHandler's catch block
       }
     }
     //The Book.build() method used above will return an non-persistent (or unsaved) model instance. The built instance holds the properties / values of the Book being created via req.body. It will get stored in the database by the create() method once the user submits the form with a valid title.
@@ -93,24 +94,29 @@ router.post(
 );
 
 //5. Book Detail Route
+// router.get("/:id", function (req, res, next) {
+//   res.render("update-book", { title: "Update Book" });
+// });
+
 router.get(
-  "/books/:id",
+  "/:id",
   asyncHandler(async (req, res, next) => {
     const book = await Book.findByPk(req.params.id);
     if (book) {
-      res.render("books/show/:id" + book.id, {
+      res.render("update-book", {
         book: book,
         title: book.title,
       });
     } else {
-      res.sendStatus(404);
+      next();
+      //res.sendStatus(404);
     }
   })
 );
 
 //6. Update Book Route
 router.post(
-  "/books/:id",
+  "/:id",
   asyncHandler(async (req, res) => {
     let book;
     try {
@@ -126,11 +132,11 @@ router.post(
         // checking the error
         book = await Book.build(req.body);
         book.id = req.params.id; //make sure correct book gets updated
-        res.render("books/create", {
-          //extend create.pug layout here??
+        res.render("new-book", {
+          //extend new-book.pug layout here??
           book: book,
           errors: error.errors,
-          title: "Edit Book",
+          title: "Update Book",
         });
       } else {
         throw error;
@@ -141,7 +147,7 @@ router.post(
 
 //7. Delete Book Route
 router.post(
-  "/books/:id/delete",
+  "/:id/delete",
   asyncHandler(async (req, res) => {
     const book = await Book.findByPk(req.params.id);
     if (book) {

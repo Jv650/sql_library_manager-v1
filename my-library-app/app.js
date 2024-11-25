@@ -42,10 +42,10 @@ const sequelize = new Sequelize({
 })();
 
 // create new error()
-app.use(function (req, res, next) {
+app.use(function (req, res) {
   const error = new Error("Uh-oh looks like this page is not found");
   error.status = 404;
-  res.render("example-markup/page-not-found.html", { error });
+  res.render("page-not-found", { error });
   //next(error);
 });
 
@@ -68,7 +68,7 @@ app.use(function (err, req, res, next) {
 //global error handler
 app.use(function (req, res, next, error) {
   res.status(error.status || 500); //default to 500 if no status
-  res.render("example-markup/error.html", {
+  res.render("error", {
     error: error.message || "An unexpected error ocurred.",
   });
 });

@@ -3,7 +3,7 @@ extends layout
 block content
         h1= title
         form(method='get' action="/books")
-        a.button(type=submit) Create New Book
+        a.button(type='submit' href='/books/new') Create New Book
         p
           table 
             tr
