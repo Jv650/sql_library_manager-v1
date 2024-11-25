@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Book = require("../models").Book;
+const seq = require("sequelize").Op;
 
 /* Handler function to wrap each route. */
 function asyncHandler(cb) {
@@ -18,11 +19,11 @@ function asyncHandler(cb) {
 //1.Home Route: get / - Should redirect to the /books route
 router.get(
   "/",
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req, res, next) => {
     const books = await Book.findAll({ order: [["createdAt", "DESC"]] }); //findAll takes in an options object //the array createdat and desc will organize books in desired order
     res.render("index", {
       books: books,
-      title: "BOOKS LIST!",
+      title: "BOOKS",
     });
   })
 );
@@ -30,23 +31,33 @@ router.get(
 //2. Books Route
 router.get(
   "/books",
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req, res, next) => {
     const books = await Book.findAll({ order: [["createdAt", "DESC"]] }); //findAll takes in an options object //the array createdat and desc will organize books in desired order
     res.render("books/index", {
       books: books,
-      title: "BOOKS LIST!",
+      title: "BOOKS",
     });
   })
 );
 
 //3. New Book Route
+/*router.get("/books/new", function (req, res, next) {
+  res.render("books/new");
+}); */
+
 router.get(
   "/books/new",
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req, res, next) => {
     const book = await Book.findByPk(req.params.id);
     if (book) {
       //if book exists render to books/show else show 404 status
-      res.render("books/show", { book: book, title: book.title });
+      res.render("/books/new", {
+        //extend create.pug layout here??
+        book: book,
+        title: book.title,
+        id: book.id,
+        name: book.title,
+      });
     } else {
       res.sendStatus(404);
     }
@@ -56,7 +67,7 @@ router.get(
 //4. Create Book Route
 router.post(
   "/books/new",
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req, res, next) => {
     let book;
     try {
       //You can nest try...catch statements inside `try` blocks. Any given exception will be caught only once by the nearest enclosing catch block unless it is re-thrown (which you will do in the next step).
@@ -66,7 +77,8 @@ router.post(
       if (error.name === "SequelizeValidationError") {
         // checking the error
         book = await Book.build(req.body);
-        res.render("books/new", {
+        res.render("create", {
+          //extend create.pug layout here??
           book,
           errors: error.errors,
           title: "New Book",
@@ -83,10 +95,10 @@ router.post(
 //5. Book Detail Route
 router.get(
   "/books/:id",
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req, res, next) => {
     const book = await Book.findByPk(req.params.id);
     if (book) {
-      res.render("books/show/:id" + article.id, {
+      res.render("books/show/:id" + book.id, {
         book: book,
         title: book.title,
       });
@@ -105,7 +117,7 @@ router.post(
       const book = await Book.findByPk(req.params.id);
       if (book) {
         await book.update(req.body);
-        res.redirect("/books/" + article.id);
+        res.redirect("/books" + book.id);
       } else {
         res.sendStatus(404);
       }
@@ -114,8 +126,9 @@ router.post(
         // checking the error
         book = await Book.build(req.body);
         book.id = req.params.id; //make sure correct book gets updated
-        res.render("books/edit", {
-          book,
+        res.render("books/create", {
+          //extend create.pug layout here??
+          book: book,
           errors: error.errors,
           title: "Edit Book",
         });
@@ -132,7 +145,7 @@ router.post(
   asyncHandler(async (req, res) => {
     const book = await Book.findByPk(req.params.id);
     if (book) {
-      //If article exists, destroy it and redirect to /books. Else, send a 404 status to the client
+      //If book exists, destroy it and redirect to /books. Else, send a 404 status to the client
       await book.destroy();
       res.redirect("/books");
     } else {

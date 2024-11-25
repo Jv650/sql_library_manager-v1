@@ -13,7 +13,7 @@ var app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
-app.use(express.static("public")); //set up static middleware
+app.use("/static", express.static("public")); //set up static middleware
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -66,10 +66,10 @@ app.use(function (err, req, res, next) {
 });
 
 //global error handler
-app.use(function (req, res, next, err) {
-  res.status(err.status || 500); //default to 500 if no status
+app.use(function (req, res, next, error) {
+  res.status(error.status || 500); //default to 500 if no status
   res.render("example-markup/error.html", {
-    error: err.message || "An unexpected error ocurred.",
+    error: error.message || "An unexpected error ocurred.",
   });
 });
 

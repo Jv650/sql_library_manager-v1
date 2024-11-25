@@ -1,0 +1,15 @@
+extends layout
+
+block content
+    h1= title
+    form(method="post" action='/books/new')
+        label(for='title') Title
+        input(type='text' id='title' name='title') 
+        label(for='author') Author
+        input(type='text' id='title' name='title') 
+        label(for='genre') Genre 
+        input(type='text' id='title' name='title')  
+        label(for='year') Year 
+        input(type='text' id='title' name='title') 
+
+button(type='submit') Submit
