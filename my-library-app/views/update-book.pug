@@ -3,26 +3,26 @@ extends layout
 block content
     h1= title
     include form-error
-    form(method="post" action='/books/:id')
+    form(method="get" action=`/books/:id`)
     
         label(for="title") Title
-        input(type='text' id='title' name='title') 
+        input(type='text' id='title' name='title' value=book.title) 
     p
         label(for='author') Author
-        input(type='text' id='author' name='author') 
+        input(type='text' id='author' name='author' value=book.author) 
     p
         label(for='genre') Genre 
-        input(type='text' id='genre' name='genre') 
+        input(type='text' id='genre' name='genre' value=book.genre) 
     p
         label(for='year') Year 
-        input(type='text' id='year' name='year') 
+        input(type='text' id='year' name='year' value=book.year) 
     p  
-    form
-    a.button(type='submit' href='/books') Update Book
+    form(method="post")
+    a.button(type='submit' formaction=`/books/:id/update` href='/books') Update Book
     p     
     form
     a.button(type='submit' href='/books') Cancel
     p     
-    form
-    a.button(type='submit' href='/books') Delete Book
+    form(method="post")
+    a.button(type='submit' formaction=`/books/:id/delete` href='/books') Delete Book
     

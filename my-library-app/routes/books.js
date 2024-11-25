@@ -105,7 +105,7 @@ router.get(
     if (book) {
       res.render("update-book", {
         book: book,
-        title: book.title,
+        title: "Update Book",
       });
     } else {
       next();
@@ -117,31 +117,29 @@ router.get(
 //6. Update Book Route
 router.post(
   "/:id",
-  asyncHandler(async (req, res) => {
-    let book;
-    try {
-      const book = await Book.findByPk(req.params.id);
-      if (book) {
-        await book.update(req.body);
-        res.redirect("/books" + book.id);
-      } else {
-        res.sendStatus(404);
-      }
-    } catch (error) {
-      if (error.name === "SequelizeValidationError") {
-        // checking the error
-        book = await Book.build(req.body);
-        book.id = req.params.id; //make sure correct book gets updated
-        res.render("new-book", {
-          //extend new-book.pug layout here??
-          book: book,
-          errors: error.errors,
-          title: "Update Book",
-        });
-      } else {
-        throw error;
-      }
+  asyncHandler(async (req, res, next) => {
+    const book = await Book.findByPk(req.params.id);
+    if (book) {
+      await book.update(req.body);
+      res.redirect("/books"); //+ book.id)
+    } else {
+      next();
     }
+    // } catch (error) {
+    //   if (error.name === "SequelizeValidationError") {
+    //     // checking the error
+    //     book = await Book.build(req.body);
+    //     book.id = req.params.id; //make sure correct book gets updated
+    //     res.render("update-book", {
+    //       //extend new-book.pug layout here??
+    //       book: book,
+    //       errors: error.errors,
+    //       title: book.title,
+    //     });
+    //   } else {
+    //     throw error;
+    //   }
+    // }
   })
 );
 
