@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
+  //.init() is used to initialize and configure and model
   Book.init(
     {
       title: {

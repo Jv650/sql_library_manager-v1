@@ -45,38 +45,23 @@ const sequelize = new Sequelize({
 
 // create new error()
 app.use(function (req, res, next) {
-  const error = new Error("Uh-oh looks like this page is not found");
+  const error = new Error("Uh-oh looks like this page is not found"); //will render using page-not-found.pug and render onto page
   error.status = 404;
   next(error);
 });
-
-// // catch 404 and forward to error handler
-// app.use(function (req, res, next) {
-//   next(createError(404));
-// });
-
-// // error handler
-// app.use(function (err, req, res, next) {
-//   // set locals, only providing error in development
-//   res.locals.message = err.message;
-//   res.locals.error = req.app.get("env") === "development" ? err : {};
-
-//   // render the error page
-//   res.status(err.status || 500);
-//   res.render("error");
-// });
 
 //global error handler
 app.use(function (error, req, res, next) {
   res.status(error.status || 500); //default to 500 if no status
   if (error.status === 404) {
     res.render("page-not-found", {
-      message: error.message,
+      //will render page-not-found.pug
+      message: error.message, //locals which should be found inside the page-not-found.pug
       status: error.status,
     });
   } else {
     res.render("error", {
-      message: error.message,
+      message: error.message, //locals which should be found inside the error.pug
       status: error.status,
     });
   }

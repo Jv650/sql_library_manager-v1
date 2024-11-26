@@ -11,12 +11,11 @@ function asyncHandler(cb) {
     } catch (error) {
       // Forward error to the global error handler
       next(error);
-      //res.status(500).send(error);
     }
   };
 }
 
-//1.Home Route: get / - Should redirect to the /books route
+//Home Route: get / - Should redirect to the /books route
 router.get(
   "/",
   asyncHandler(async (req, res) => {
@@ -28,33 +27,14 @@ router.get(
   })
 );
 
-//3. View Books & New Book Route
+//View Books & New Book Route
 router.get("/new", function (req, res) {
   res.render("new-book", {
     book: { title: "", author: "", genre: "", year: "" },
   });
 });
 
-// router.get(
-//   "/new",
-//   asyncHandler(async (req, res, next) => {
-//     const book = await Book.findByPk(req.params.id);
-//     if (book) {
-//       //if book exists render to books/show else show 404 status
-//       res.render("new-book", {
-//         //extend new-book.pug layout here??
-//         book: book,
-//         title: book.title,
-//         id: book.id,
-//         name: book.title,
-//       });
-//     } else {
-//       res.sendStatus(404);
-//     }
-//   })
-// );
-
-//4. Create Book Route
+//Create Book Route
 router.post(
   "/new",
   asyncHandler(async (req, res) => {
@@ -62,14 +42,13 @@ router.post(
     try {
       //You can nest try...catch statements inside `try` blocks. Any given exception will be caught only once by the nearest enclosing catch block unless it is re-thrown (which you will do in the next step).
       const book = await Book.create(req.body);
-      res.redirect("/books"); //"/books/" + book.id //update-book
+      res.redirect("/books");
     } catch (error) {
       if (error.name === "SequelizeValidationError") {
         // checking the error
         book = await Book.build(req.body);
-        //book.id = req.params.id;
+
         res.render("new-book", {
-          //extend new-book.pug layout here??
           book: book,
           errors: error.errors,
           title: "New Book",
@@ -83,11 +62,7 @@ router.post(
   })
 );
 
-//5. Book Detail Route
-// router.get("/:id", function (req, res, next) {
-//   res.render("update-book", { title: "Update Book" });
-// });
-
+//Book Detail Route
 router.get(
   "/:id",
   asyncHandler(async (req, res, next) => {
@@ -98,12 +73,12 @@ router.get(
         title: "Update Book",
       });
     } else {
-      next(); //res.sendStatus(404);
+      next();
     }
   })
 );
 
-//6. Update Book Route
+//Update Book Route
 router.post(
   "/:id",
   asyncHandler(async (req, res) => {
@@ -113,7 +88,7 @@ router.post(
       if (book) {
         //if book exists, update it in database and redirect to updated book else show 404 status
         await book.update(req.body);
-        res.redirect("/books"); //"/books/" + book.id
+        res.redirect("/books");
       } else {
         res.sendStatus(404);
       }
@@ -131,33 +106,10 @@ router.post(
         throw error;
       }
     }
-    // asyncHandler(async (req, res, next) => {
-    //   const book = await Book.findByPk(req.params.id);
-    //   if (book) {
-    //     await book.update(req.body);
-    //     res.redirect("/books"); //+ book.id)
-    //   } else {
-    //     next();
-    //   }
-    // } catch (error) {
-    //   if (error.name === "SequelizeValidationError") {
-    //     // checking the error
-    //     book = await Book.build(req.body);
-    //     book.id = req.params.id; //make sure correct book gets updated
-    //     res.render("update-book", {
-    //       //extend new-book.pug layout here??
-    //       book: book,
-    //       errors: error.errors,
-    //       title: book.title,
-    //     });
-    //   } else {
-    //     throw error;
-    //   }
-    // }
   })
 );
 
-//7. Delete Book Route
+//Delete Book Route
 router.post(
   "/:id/delete",
   asyncHandler(async (req, res) => {
