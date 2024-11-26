@@ -19,7 +19,7 @@ function asyncHandler(cb) {
 //1.Home Route: get / - Should redirect to the /books route
 router.get(
   "/",
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     const books = await Book.findAll({ order: [["createdAt", "DESC"]] }); //findAll takes in an options object //the array createdat and desc will organize books in desired order
     res.render("index", {
       books: books,

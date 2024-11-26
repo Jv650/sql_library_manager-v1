@@ -32,25 +32,8 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-
-      genre: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: "Genre is required",
-          },
-        },
-      },
-      year: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: "Year is required",
-          },
-        },
-      },
+      genre: DataTypes.STRING,
+      year: DataTypes.INTEGER,
     },
     {
       sequelize,
