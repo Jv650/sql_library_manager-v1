@@ -1,4 +1,4 @@
-extends layout.pug
+extends layout
 
 block content
     h1 New Book 
@@ -7,18 +7,18 @@ block content
     
         label(for="title") Title
         input(type='text' id='title' name='title' value=book.title) 
-    p
+        p
         label(for='author') Author
         input(type='text' id='author' name='author' value=book.author) 
-    p
+        p
         label(for='genre') Genre 
         input(type='text' id='genre' name='genre' value=book.genre) 
-    p
+        p
         label(for='year') Year 
         input(type='text' id='year' name='year' value=book.year) 
-    p  
+        p  
         input(type='submit' value='Create New Book')
-    p
+        p
         a.button(href='/books') Cancel
 
     
