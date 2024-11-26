@@ -1,27 +1,24 @@
-extends layout
+extends layout.pug
 
 block content
-    h1= title
+    h1 New Book 
     include form-error
-
     form(method="post" action='/books/new')
     
-        label(for='title') Title
-        input(type='text' id='title' name='title') 
+        label(for="title") Title
+        input(type='text' id='title' name='title' value=book.title) 
     p
         label(for='author') Author
-        input(type='text' id='author' name='author') 
+        input(type='text' id='author' name='author' value=book.author) 
     p
         label(for='genre') Genre 
-        input(type='text' id='genre' name='genre') 
+        input(type='text' id='genre' name='genre' value=book.genre) 
     p
         label(for='year') Year 
-        input(type='text' id='year' name='year') 
+        input(type='text' id='year' name='year' value=book.year) 
     p  
-    form
-    a.button(method="post" type='submit' href='/books') Create New Book
+        input(type='submit' value='Create New Book')
+    p
+        a.button(href='/books') Cancel
 
-    p     
-    form
-    a.button(type='submit' href='/books') Cancel
     

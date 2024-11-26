@@ -3,7 +3,7 @@ extends layout
 block content
     h1= title
     include form-error
-    form(method="get" action=`/books/:id`)
+    form(method="post" action=`/books/${book.id}`)
     
         label(for="title") Title
         input(type='text' id='title' name='title' value=book.title) 
@@ -17,12 +17,11 @@ block content
         label(for='year') Year 
         input(type='text' id='year' name='year' value=book.year) 
     p  
-    form(method="post")
-    a.button(type='submit' formaction=`/books/:id/update` href='/books') Update Book
+        input(type='submit' value='Update Book')
+       
+    form(method='post' action=`/books/${book.id}/delete`)
+    p
+        a.button(href='/books') Cancel
     p     
-    form
-    a.button(type='submit' href='/books') Cancel
-    p     
-    form(method="post")
-    a.button(type='submit' formaction=`/books/:id/delete` href='/books') Delete Book
+        input(type='submit' value='Delete Book') 
     

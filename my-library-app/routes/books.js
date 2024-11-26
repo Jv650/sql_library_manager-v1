@@ -30,7 +30,9 @@ router.get(
 
 //3. View Books & New Book Route
 router.get("/new", function (req, res) {
-  res.render("new-book", { title: "New Book" });
+  res.render("new-book", {
+    book: { title: "", author: "", genre: "", year: "" },
+  });
 });
 
 // router.get(
