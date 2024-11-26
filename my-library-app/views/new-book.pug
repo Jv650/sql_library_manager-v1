@@ -3,22 +3,23 @@ extends layout
 block content
     h1= title
     include form-error
+
     form(method="post" action='/books/new')
     
-        label(for=title) Title
-        input(type='text' name='title') 
+        label(for='title') Title
+        input(type='text' id='title' name='title') 
     p
-        label(for=author) Author
-        input(type='text' name='author') 
+        label(for='author') Author
+        input(type='text' id='author' name='author') 
     p
-        label(for=genre) Genre 
-        input(type='text' name='genre') 
+        label(for='genre') Genre 
+        input(type='text' id='genre' name='genre') 
     p
-        label(for=year) Year 
-        input(type='text' name='year') 
+        label(for='year') Year 
+        input(type='text' id='year' name='year') 
     p  
     form
-    a.button(type='submit' href='/books') Create New Book
+    a.button(method="post" type='submit' href='/books') Create New Book
 
     p     
     form

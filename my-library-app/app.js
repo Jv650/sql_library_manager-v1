@@ -34,6 +34,8 @@ const sequelize = new Sequelize({
 // sync databse w/ async IIFE or Immediately Invoked Function Expression
 (async () => {
   try {
+    await sequelize.authenticate();
+    console.log("Connection established successfully");
     await sequelize.sync();
     console.log("Connection to the database successful!");
   } catch (error) {

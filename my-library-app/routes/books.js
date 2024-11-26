@@ -28,20 +28,8 @@ router.get(
   })
 );
 
-//2. Books Route
-router.get(
-  "/books",
-  asyncHandler(async (req, res, next) => {
-    const books = await Book.findAll({ order: [["createdAt", "DESC"]] }); //findAll takes in an options object //the array createdat and desc will organize books in desired order
-    res.render("index", {
-      books: books,
-      title: "BOOKS",
-    });
-  })
-);
-
-//3. New Book Route
-router.get("/new", function (req, res, next) {
+//3. View Books & New Book Route
+router.get("/new", function (req, res) {
   res.render("new-book", { title: "New Book" });
 });
 
@@ -67,21 +55,21 @@ router.get("/new", function (req, res, next) {
 //4. Create Book Route
 router.post(
   "/new",
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     let book;
     try {
       //You can nest try...catch statements inside `try` blocks. Any given exception will be caught only once by the nearest enclosing catch block unless it is re-thrown (which you will do in the next step).
       const book = await Book.create(req.body);
-      res.redirect("new-book"); //"/books/" + book.id
-    } catch (err) {
-      if (er.name === "SequelizeValidationError") {
+      res.redirect("/books"); //"/books/" + book.id //update-book
+    } catch (error) {
+      if (error.name === "SequelizeValidationError") {
         // checking the error
         book = await Book.build(req.body);
-        book.id = req.params.id;
+        //book.id = req.params.id;
         res.render("new-book", {
           //extend new-book.pug layout here??
           book: book,
-          errors: err.errors,
+          errors: error.errors,
           title: "New Book",
         });
       } else {
@@ -108,8 +96,7 @@ router.get(
         title: "Update Book",
       });
     } else {
-      next();
-      //res.sendStatus(404);
+      next(); //res.sendStatus(404);
     }
   })
 );
@@ -117,14 +104,39 @@ router.get(
 //6. Update Book Route
 router.post(
   "/:id",
-  asyncHandler(async (req, res, next) => {
-    const book = await Book.findByPk(req.params.id);
-    if (book) {
-      await book.update(req.body);
-      res.redirect("/books"); //+ book.id)
-    } else {
-      next();
+  asyncHandler(async (req, res) => {
+    let book;
+    try {
+      const book = await Book.findByPk(req.params.id);
+      if (book) {
+        //if book exists, update it in database and redirect to updated book else show 404 status
+        await book.update(req.body);
+        res.redirect("/books"); //"/books/" + book.id
+      } else {
+        res.sendStatus(404);
+      }
+    } catch (error) {
+      if (error.name === "SequelizeValidationError") {
+        // checking the error
+        book = await Book.build(req.body);
+        book.id = req.params.id; //make sure correct book gets updated
+        res.render("update-book", {
+          book: book,
+          errors: error.errors,
+          title: book.title,
+        });
+      } else {
+        throw error;
+      }
     }
+    // asyncHandler(async (req, res, next) => {
+    //   const book = await Book.findByPk(req.params.id);
+    //   if (book) {
+    //     await book.update(req.body);
+    //     res.redirect("/books"); //+ book.id)
+    //   } else {
+    //     next();
+    //   }
     // } catch (error) {
     //   if (error.name === "SequelizeValidationError") {
     //     // checking the error
