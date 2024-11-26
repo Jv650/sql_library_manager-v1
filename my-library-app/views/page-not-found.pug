@@ -1,6 +1,6 @@
 extends layout 
 
 block content 
-    h1= "Uh-oh, page not found"
-    h2= error.status
+    h1 Error #{status}
+    p #{message}
     a.button(href='/books') Home
